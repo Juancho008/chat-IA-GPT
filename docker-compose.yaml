@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  servidorpy:
+    build:
+      context: ./apps
+      args:
+        python_version: ${PYTHON_VERSION}
+    container_name: ${COMPOSE_PROJECT_NAME}-python3.12
+    restart: always
+    networks:
+      - camara_red_interna
+    links:
+      - chromadb
+    ports:
+      - "8501:8501"
+    depends_on:
+      - chromadb
+    volumes:
+      - ./apps:/apps/documentos
+
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    restart: always
+    networks:
+      - camara_red_interna
+    ports:
+      - "8010:8000"
+    volumes:
+      - ./apps:/apps/documentos
+
+networks:
+  camara_red_interna:
+    external: true
+    driver: bridge
+
+
+
+
